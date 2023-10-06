@@ -14,7 +14,14 @@ private:
 public:
     RubroNegra() : raiz {&nulo} {}
 
-    Node* busca(Node *x, T k);
+    Node* buscar(Node *x, T k) 
+    {
+        if (x == &nulo || x->chave == k) { return x; }
+
+        if (k < x->chave) return buscar(x->esq, k);
+        else              return buscar(x->dir, k);
+    }
+
     Node* min(Node *x);
     Node* max(Node *x);
     Node* sucessor(Node *x);
