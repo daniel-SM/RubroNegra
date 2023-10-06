@@ -1,3 +1,5 @@
+#define NEGRO false;
+#define RUBRO true;
 
 template <typename T>
 class RubroNegra
@@ -6,11 +8,13 @@ private:
     struct Node 
     {
         Node *pai, *esq, *dir;
-        T chave;
+        T chave; 
+        bool cor;
     };
 
     Node *raiz;
     Node nulo;
+
 public:
     RubroNegra() : raiz {&nulo} {}
 
@@ -58,7 +62,7 @@ public:
             x = y;
             y = x->pai;
         }
-        return y;
+        return y;identifier
     }
 
     void RotEsq(Node *x) 
@@ -93,6 +97,62 @@ public:
 
         y->dir = x;
         x->pai = y;
+    }
+
+    void consertarInclusao (Node *z) 
+    {
+        while (z->pai->cor == RUBRO)
+        {
+            Node *y;
+            if (z->pai == z->pai->pai>esq)
+            {
+                y = z->pai->pai->dir;
+
+                if (y->cor == RUBRO)
+                {
+                    z->pai->cor = NEGRO;
+                    y->cor = NEGRO;
+                    z = y->pai;
+                    z->cor = RUBRO;
+                }
+                else
+                {
+                    if (z == z->pai->dir)
+                    {
+                        z = z->pai;
+                        RotEsq(z);
+                    }
+                    z->pai->cor = NEGRO;
+                    z->pai->pai->cor = RUBRO;
+                    RotDir(z->pai->pai);                    
+                }
+                
+            }
+            else
+            {
+                y = z->pai->pai->esq;
+
+                if (y->cor == RUBRO)
+                {
+                    z->pai->cor = NEGRO;
+                    y->cor = NEGRO;
+                    z = y->pai;
+                    z->cor = RUBRO;
+                }
+                else
+                {
+                    if (z == z->pai->esq)
+                    {
+                        z = z->pai;
+                        RotDir(z);
+                    }
+                    z->pai->cor = NEGRO;
+                    z->pai->pai->cor = RUBRO;
+                    RotEsq(z->pai->pai);
+                }
+            }
+        }
+        raiz->cor = NEGRO;
     }
 
     void incluir(Node *z) 
