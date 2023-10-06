@@ -47,6 +47,7 @@ public:
         return y;
         
     }
+
     Node* predecessor(Node *x) 
     {
         if (x->esq != &nulo) return max(x->esq);
@@ -60,7 +61,45 @@ public:
         return y;
     }
 
-    void incluir(Node *z);
+    void RotEsq(Node *x) 
+    {
+        Node *y = x->dir;
+        x->dir = y->esq;
+
+        if (y->esq != &nulo) y->esq->pai = x;
+
+        y->pai = x->pai;
+
+        if (x->pai == &nulo)       raiz = y;
+        else if (x == x->pai->esq) x->pai->esq = y;
+        else                       x->pai->dir = y;
+        
+        y->esq = x;
+        x->pai = y;
+    }
+
+    void RotDir(Node *x) 
+    {
+        Node *y = x->esq;
+        x->esq = y->dir;
+
+        if (y->dir != &nulo) y->dir->pai = x;
+
+        y->pai = x->pai;
+
+        if (x->pai == &nulo) raiz = y;
+        else if (x == x->pai->esq) x->pai->esq = y;
+        else x->pai->dir = y;
+
+        y->dir = x;
+        x->pai = y;
+    }
+
+    void incluir(Node *z) 
+    {
+
+    }
+
     void remover(Node *z);
 
 };
