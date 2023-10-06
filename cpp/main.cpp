@@ -27,15 +27,38 @@ public:
         if (x->esq == &nulo) return x;
         return min(x->esq);
     }
-    
+
     Node* max(Node *x) 
     {
         if (x->dir == &nulo) return x;
         return max(x->dir);
     }
 
-    Node* sucessor(Node *x);
-    Node* predecessor(Node *x);
+    Node* sucessor(Node *x) 
+    {
+        if (x->dir != &nulo) return min(x->dir);
+
+        y = x->pai;
+        while (y != &nulo && x == y->dir)
+        {
+            x = y; 
+            y = x->pai;
+        }
+        return y;
+        
+    }
+    Node* predecessor(Node *x) 
+    {
+        if (x->esq != &nulo) return max(x->esq);
+
+        y = x->pai;
+        while (y != &nulo && x == y->esq)
+        {
+            x = y;
+            y = x->pai;
+        }
+        return y;
+    }
 
     void incluir(Node *z);
     void remover(Node *z);
