@@ -1,23 +1,27 @@
-#define NEGRO false;
-#define RUBRO true;
+#define NEGRO false
+#define RUBRO true
 
+
+// Estrutura e métodos de árvore Rubro-Negra
 template <typename T>
 class RubroNegra
 {
 private:
+    // Estrutura de um nó da árvore
     struct Node 
     {
-        Node *pai, *esq, *dir;
         T chave; 
+        Node *pai, *esq, *dir;
         bool cor;
     };
 
-    Node *raiz;
     Node nulo;
+    Node *raiz;
 
 public:
     RubroNegra() : raiz {&nulo} {}
 
+    // Buscar por chave k na árvore
     Node* buscar(Node *x, T k) 
     {
         if (x == &nulo || x->chave == k) return x;
@@ -26,23 +30,26 @@ public:
         else              return buscar(x->dir, k);
     }
 
+    // Retorna o menor valor da subárvore enraizada em x
     Node* min(Node *x) 
     {
         if (x->esq == &nulo) return x;
         return min(x->esq);
     }
 
+    // Retorna o maior valor da subárvore enraizada em x
     Node* max(Node *x) 
     {
         if (x->dir == &nulo) return x;
         return max(x->dir);
     }
 
+    // Retorna o valor após x no percurso em-ordem
     Node* sucessor(Node *x) 
     {
         if (x->dir != &nulo) return min(x->dir);
 
-        y = x->pai;
+        Node *y = x->pai;
         while (y != &nulo && x == y->dir)
         {
             x = y; 
@@ -52,20 +59,22 @@ public:
         
     }
 
+    // Retorna o valor anterior a x no percurso em-ordem
     Node* predecessor(Node *x) 
     {
         if (x->esq != &nulo) return max(x->esq);
 
-        y = x->pai;
+        Node *y = x->pai;
         while (y != &nulo && x == y->esq)
         {
             x = y;
             y = x->pai;
         }
-        return y;identifier
+        return y;
     }
 
-    void RotEsq(Node *x) 
+    // Realiza a rotação a direita do nó x
+    void rotacaoEsq(Node *x) 
     {
         Node *y = x->dir;
         x->dir = y->esq;
@@ -82,7 +91,8 @@ public:
         x->pai = y;
     }
 
-    void RotDir(Node *x) 
+    // Realiza a rotação a esquerda do nó x
+    void rotacaoDir(Node *x) 
     {
         Node *y = x->esq;
         x->esq = y->dir;
@@ -99,12 +109,13 @@ public:
         x->pai = y;
     }
 
+    // Preserva as propriedades da árvore RB após inclusão
     void consertarInclusao (Node *z) 
     {
         while (z->pai->cor == RUBRO)
         {
             Node *y;
-            if (z->pai == z->pai->pai>esq)
+            if (z->pai == z->pai->pai->esq)
             {
                 y = z->pai->pai->dir;
 
@@ -120,11 +131,11 @@ public:
                     if (z == z->pai->dir)
                     {
                         z = z->pai;
-                        RotEsq(z);
+                        rotacaoEsq(z);
                     }
                     z->pai->cor = NEGRO;
                     z->pai->pai->cor = RUBRO;
-                    RotDir(z->pai->pai);                    
+                    rotacaoDir(z->pai->pai);                    
                 }
                 
             }
@@ -144,21 +155,22 @@ public:
                     if (z == z->pai->esq)
                     {
                         z = z->pai;
-                        RotDir(z);
+                        rotacaoDir(z);
                     }
                     z->pai->cor = NEGRO;
                     z->pai->pai->cor = RUBRO;
-                    RotEsq(z->pai->pai);
+                    rotacaoEsq(z->pai->pai);
                 }
             }
         }
         raiz->cor = NEGRO;
     }
 
+    // Insere na árvore o nó z e conserta a árvore depois
     void incluir(Node *z) 
     {
         Node *y = &nulo;
-        x = raiz;
+        Node *x = raiz;
 
         while (x != &nulo)
         {
@@ -179,10 +191,21 @@ public:
         consertarInclusao(z);
     }
 
+    // Função auxiliar que cria um nó // e então chama função incluir
+    void insercao(T k) {
+        Node z {k};
+        incluir(&z);
+    }
+
     void remover(Node *z);
 };
 
 int main() 
 {
+    // Testando inclusão
+    RubroNegra<int> arvore;
+
+    arvore.insercao(10);
+
     return 0;
 }
