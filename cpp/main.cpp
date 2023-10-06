@@ -157,11 +157,29 @@ public:
 
     void incluir(Node *z) 
     {
+        Node *y = &nulo;
+        x = raiz;
 
+        while (x != &nulo)
+        {
+            y = x;
+            if (z->chave < x->chave) x = x->esq;
+            else                     x = x->dir;
+        }
+        z->pai = y;
+
+        if (y == &nulo)               raiz = z;
+        else if (z->chave < y->chave) y->esq = z;
+        else                          y->dir = z;
+        
+        z->esq = &nulo;
+        z->dir = &nulo;
+        z->cor = RUBRO;
+
+        consertarInclusao(z);
     }
 
     void remover(Node *z);
-
 };
 
 int main() 
