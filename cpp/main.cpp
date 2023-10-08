@@ -1,6 +1,7 @@
-#define NEGRO false
-#define RUBRO true
+#include <iostream>
 
+#define RUBRO true
+#define NEGRO false
 
 // Estrutura e métodos de árvore Rubro-Negra
 template <typename T>
@@ -18,8 +19,37 @@ private:
     Node nulo;
     Node *raiz;
 
+    void desalocar (Node *n) 
+    {
+        if (n != &nulo)
+        {
+            desalocar(n->esq);
+            desalocar(n->dir);
+            delete n;
+        }
+    }
+
 public:
-    RubroNegra() : raiz {&nulo} {}
+    RubroNegra() : raiz {&nulo} { nulo.cor = NEGRO; }
+    ~RubroNegra() { desalocar(raiz); }
+
+    // Funcao auxiliar que faz um acao ao visitar um nó
+    // No caso apenas imprime a chave
+    void visitar (Node *x) { std::cout << x->chave << "\n";}
+
+    // Percurso em ordem da arvore 
+    void emOrdem (Node *x) 
+    {
+        if (x != &nulo)
+        {
+            emOrdem(x->esq);
+            visitar(x);
+            emOrdem(x->dir);
+        }
+    }
+
+    // Inicia o percurso na arvore pela raiz
+    void percorrer() { emOrdem(raiz); }
 
     // Buscar por chave k na árvore
     Node* buscar(Node *x, T k) 
@@ -29,6 +59,8 @@ public:
         if (k < x->chave) return buscar(x->esq, k);
         else              return buscar(x->dir, k);
     }
+
+    Node* busca (T k) { return buscar(raiz, k); }
 
     // Retorna o menor valor da subárvore enraizada em x
     Node* min(Node *x) 
@@ -175,14 +207,20 @@ public:
         while (x != &nulo)
         {
             y = x;
-            if (z->chave < x->chave) x = x->esq;
-            else                     x = x->dir;
+
+            if (z->chave < x->chave)
+                x = x->esq;
+            else
+                x = x->dir;
         }
         z->pai = y;
 
-        if (y == &nulo)               raiz = z;
-        else if (z->chave < y->chave) y->esq = z;
-        else                          y->dir = z;
+        if (y == &nulo) 
+            raiz = z;
+        else if (z->chave < y->chave) 
+            y->esq = z;
+        else 
+            y->dir = z;
         
         z->esq = &nulo;
         z->dir = &nulo;
@@ -193,8 +231,10 @@ public:
 
     // Função auxiliar que cria um nó // e então chama função incluir
     void insercao(T k) {
-        Node z {k};
-        incluir(&z);
+        Node *z = new Node;
+        z->chave = k;
+
+        incluir(z);
     }
 
     void remover(Node *z);
@@ -205,7 +245,9 @@ int main()
     // Testando inclusão
     RubroNegra<int> arvore;
 
-    arvore.insercao(10);
+    for (int i = 0; i < 20; i++) { arvore.insercao(i); }
+
+    arvore.percorrer();
 
     return 0;
 }
